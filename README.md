@@ -34,22 +34,18 @@ Once above Dependencies are installed we can move with [further steps](#installi
 
 A step by step series of examples that tell you how to get a development env running.
 
-#### Step 1: Install Project related Dependencies
-```
-go get .
-```
 
-#### Step 2: Running a 2 Node Mock Kubernetes Server Locally using minikube
+#### Step 1: Running a 2 Node Mock Kubernetes Server Locally using minikube
 ```
 minikube start --nodes 2 -p k8s-cluster
 ```
 
-#### Step 3: Enabling ingress in minikube
+#### Step 2: Enabling ingress in minikube
 ```
 minikube addons enable ingress -p k8s-cluster
 ```
 
-#### Step 4: Setting Up Environmental Variables
+#### Step 3: Setting Up Environmental Variables
 
 Set up the Environmental variables according to your needs. The Application will run with defaults as mentioned in the following table
 

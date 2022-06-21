@@ -43,5 +43,4 @@ func main() {
 	controller := getNewController(clientSet, informer.Apps().V1().Deployments())
 	informer.Start(ch)
 	controller.run(ch)
-	log.Println("Informer --> ", informer)
 }
