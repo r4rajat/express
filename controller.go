@@ -37,16 +37,10 @@ func getNewController(clientSet kubernetes.Interface, deploymentInformer appsinf
 	}
 	deploymentInformer.Informer().AddEventHandler(
 		cache.ResourceEventHandlerFuncs{
-			AddFunc:    newController.addHandler,
-			DeleteFunc: newController.deleteHandler,
+			AddFunc: newController.addHandler,
 		},
 	)
 	return newController
-}
-
-func (c *controller) deleteHandler(obj interface{}) {
-	log.Println("Delete Handler Called")
-	c.queue.Add(obj)
 }
 
 func (c *controller) addHandler(obj interface{}) {
