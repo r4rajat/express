@@ -1,37 +1,98 @@
-## Welcome to GitHub Pages
+<h1 align="center">Express - Expose Ingress Custom k8s Controller</h1>
 
-You can use the [editor on GitHub](https://github.com/r4rajat/express/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+---
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
-### Markdown
+## 📝 Table of Contents
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+- [About](#about)
+- [Getting Started](#getting_started)
+- [Running the Code](#run)
+- [Authors](#authors)
+- [Acknowledgments](#acknowledgement)
 
-```markdown
-Syntax highlighted code block
+## 🧐 About <a name = "about"></a>
 
-# Header 1
-## Header 2
-### Header 3
+The Express custom kubernetes controller is written primarily in go lang. This controller explicitly keeps a watch on newly created Deployments in all Namespaces,<br>
+And as soon as a new Deployment is created, our controller will create a Service and an Ingress for it and expose it to the outer world.
 
-- Bulleted
-- List
+## 🏁 Getting Started <a name = "getting_started"></a>
 
-1. Numbered
-2. List
+These instructions will get you the project up and running on your local machine for development and testing purposes. See [Running the Code](#run) for notes on how to deploy the project on a Local System or on a Kubernetes Server.
 
-**Bold** and _Italic_ and `Code` text
+### Prerequisites
 
-[Link](url) and ![Image](src)
+To run the Express Controller on Local System, first we need to install following Software Dependencies.
+
+- [Go](https://go.dev/dl/)
+- [Docker](https://docs.docker.com/get-docker/)
+- [Minikube](https://minikube.sigs.k8s.io/docs/start/)
+
+Once above Dependencies are installed we can move with [further steps](#installing)
+
+### Installing <a name = "installing"></a>
+
+A step by step series of examples that tell you how to get a development env running.
+
+
+#### Step 1: Running a 2 Node Mock Kubernetes Server Locally using minikube
+```
+minikube start --nodes 2 -p k8s-cluster
 ```
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+#### Step 2: Enabling ingress in minikube
+```
+minikube addons enable ingress -p k8s-cluster
+```
 
-### Jekyll Themes
+#### Step 3: Setting Up Environmental Variables
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/r4rajat/express/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+Set up the Environmental variables according to your needs. The Application will run with defaults as mentioned in the following table
 
-### Support or Contact
+| Environmental Variable | Usage                               | Default Values |
+|------------------------|-------------------------------------|----------------|
+| EXPRESS_QUEUE          | Queue for holding interface objects | EXPRESS        |
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+
+## 🔧 Running the Code <a name = "run"></a>
+
+To Run the Express Controller on local machine, Open a terminal in the Project and run following command
+```
+go build
+```
+```
+./express
+```
+
+---
+
+To Run the Express Controller inside k8s cluster, follow the below steps
+
+1. Create the Role having permissions to list, create, edit and delete the resources in all namespaces
+```
+kubectl create role allowAll --resource deployments,pods,services,ingresses --verb list,create,delete
+```
+2. Create Role Binding of above role with the default service account
+```
+kubectl create rolebinding allowAll --role allowAll --serviceaccount default:default
+```
+3. Create Namespace
+```
+kubectl create namespace express
+```
+4. Deploy the Controller with the Manifest File
+```
+kubectl create -f express.yaml
+```
+
+## ✍️ Authors <a name = "authors"></a>
+
+- [@r4rajat](https://github.com/r4rajat) - Implementation
+
+## 🎉 Acknowledgements <a name = "acknowledgement"></a>
+
+- References
+    - https://pkg.go.dev/k8s.io/client-go
+    - https://pkg.go.dev/k8s.io/apimachinery
+    - https://pkg.go.dev/github.com/mitchellh/go-homedir
+    - https://kubernetes.github.io/ingress-nginx/
